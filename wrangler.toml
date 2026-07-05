@@ -1,0 +1,40 @@
+# wrangler.toml :: worker-meta-kit example
+#
+# Deploys as-is to a workers.dev hostname. Everything below the deploy
+# block is the wiring you add when the template grows into a fleet.
+
+name = "worker-meta-kit-example"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+
+# Used by envelope.js as the default `source` field, so alerts identify
+# their emitter without every call site repeating the name.
+[vars]
+SERVICE_NAME = "worker-meta-kit-example"
+
+# ---------------------------------------------------------------------
+# Sink wiring (uncomment when you have a sink Worker; see
+# docs/adapting-the-sink.md for a complete minimal one).
+#
+# A service binding keeps Worker-to-Worker alert traffic on the
+# provider's internal network: no public hop, no DNS, and granting a new
+# Worker a voice is this block plus a redeploy, not a shared webhook URL
+# copied into one more place.
+# ---------------------------------------------------------------------
+# [[services]]
+# binding = "NOTIFY"
+# service = "your-sink-worker"
+
+# The Bearer token the sink checks. Set it at the interactive prompt,
+# never in this file:
+#   wrangler secret put NOTIFY_TOKEN
+
+# ---------------------------------------------------------------------
+# Custom-domain routes, when you outgrow workers.dev. One hard-won note:
+# use zone_id, not zone_name. API tokens scoped to a single zone cannot
+# perform the account-level lookup that zone_name requires, so deploys
+# fail with a permissions error that reads like a routing bug.
+# ---------------------------------------------------------------------
+# routes = [
+#   { pattern = "api.example.com/kit*", zone_id = "<your-zone-id>" }
+# ]

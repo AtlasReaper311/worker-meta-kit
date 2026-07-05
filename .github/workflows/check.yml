@@ -1,0 +1,20 @@
+# Syntax gate with zero dependencies: consumers created from this
+# template inherit a working CI baseline on day one.
+name: check
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: node --check every module
+        run: |
+          node --check src/meta.js
+          node --check src/envelope.js
+          node --check src/index.js

@@ -1,0 +1,6 @@
+{
+  "name": "worker-meta-kit",
+  "private": true,
+  "type": "module",
+  "description": "Self-documenting Workers via /_meta plus a fixed alert envelope. Zero dependencies."
+}
