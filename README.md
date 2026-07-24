@@ -13,6 +13,7 @@
 ```
 
 [![Check](https://github.com/AtlasReaper311/worker-meta-kit/actions/workflows/check.yml/badge.svg)](https://github.com/AtlasReaper311/worker-meta-kit/actions)
+![Version](https://img.shields.io/badge/version-1.0.0-f5a623?style=flat-square&labelColor=0a0a0f)
 ![Runtime](https://img.shields.io/badge/runtime-cloudflare_workers-f5a623?style=flat-square&labelColor=0a0a0f)
 ![Deps](https://img.shields.io/badge/dependencies-zero-aaa9a0?style=flat-square&labelColor=0a0a0f)
 ![Cost](https://img.shields.io/badge/cost-%C2%A30-aaa9a0?style=flat-square&labelColor=0a0a0f)
@@ -73,6 +74,10 @@ Vendoring is the point, not a compromise: these are 50-line files, and copying t
 ## Template repository note
 
 After creating a repo from this code, its owner should tick **Settings, then Template repository** so consumers get the green **Use this template** button instead of forking. Forks carry history and an upstream link nobody wants for a starting point; templates copy files cleanly.
+
+## Release process
+
+GitHub Releases provide deterministic archives for teams that want a pinned vendoring source. The repo remains `private: true` in `package.json`, so releases do not publish an npm package. See `docs/RELEASE.md`.
 
 ## How it fits into Atlas Systems
 

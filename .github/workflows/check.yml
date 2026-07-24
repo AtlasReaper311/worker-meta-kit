@@ -22,7 +22,8 @@ jobs:
         with:
           node-version: 22
       - name: node --check every module
+        run: npm run check
+      - name: Build release artifact dry-run
         run: |
-          node --check src/meta.js
-          node --check src/envelope.js
-          node --check src/index.js
+          python3 -m py_compile scripts/build_release.py
+          npm run release:pack

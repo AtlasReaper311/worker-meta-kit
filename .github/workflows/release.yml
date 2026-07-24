@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to publish, for example v1.0.0."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.repository }}-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build GitHub release artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0, Node 24
+        with:
+          node-version: 22
+
+      - name: Validate tag and version
+        run: |
+          set -euo pipefail
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "Tag $TAG does not match VERSION $VERSION" >&2
+            exit 1
+          fi
+
+      - name: Validate template
+        run: |
+          set -euo pipefail
+          npm run check
+          python3 -m py_compile scripts/build_release.py
+          git diff --check
+
+      - name: Build release artifact
+        run: |
+          set -euo pipefail
+          npm run release:pack
+          cat reports/release/*.release-manifest.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+        with:
+          name: worker-meta-kit-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          path: reports/release/*
+          if-no-files-found: error
+          retention-days: 30
