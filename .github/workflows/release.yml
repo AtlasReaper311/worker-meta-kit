@@ -12,7 +12,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.repository }}-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
@@ -23,6 +23,8 @@ jobs:
     name: Build GitHub release artifact
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
